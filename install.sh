@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Mac dev environment bootstrap — FastAPI + PostgreSQL + React + Docker + Claude Code
-# Idempotent: safe to re-run anytime.
+# dotfiles/install.sh — https://github.com/mashah31/dotfiles
+# macOS dev bootstrap: FastAPI · React · Docker · Kubernetes
+#
 # Usage:
-#   ./install.sh              — environment setup only
-#   ./install.sh my-project   — setup + scaffold a new project
+#   ./install.sh              # environment only
+#   ./install.sh my-project   # environment + scaffold new project
 
 set -euo pipefail
 
