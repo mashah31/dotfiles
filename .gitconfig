@@ -1,0 +1,8 @@
+[credential]
+	helper = osxkeychain
+[alias]
+	ls = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	last = log -1 --stat --pretty=format:'%C(yellow)%h%Creset %C(magenta)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+	co = checkout
+	cob = checkout -b
+	pushb = push -u origin HEAD
