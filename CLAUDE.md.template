@@ -1,0 +1,55 @@
+# CLAUDE.md
+# Stack: FastAPI · React 19/Vite · PostgreSQL · Tortoise ORM · GKE
+
+## Core Rules — Read These First
+
+1. **Don't overengineer.** Solve the exact problem asked. No abstractions, patterns, or "future-proofing" unless explicitly requested. Simple always wins. If it feels clever, it's probably wrong.
+2. **Ask before big decisions.** Adding deps, changing architecture, restructuring files, anything irreversible — stop and confirm first.
+3. **Pythonic + concise.** Short functions, minimal lines, no boilerplate. If it feels long, cut it.
+4. **No `pip install`.** Always `uv add` / `uv run` / `uv sync`.
+
+---
+
+## Project Layout
+
+Domain-based — each feature is a self-contained package. `core/` is shared infrastructure only.
+
+```
+backend/app/
+  core/        config.py · security.py · deps.py · observability.py · llm.py
+  health/      router.py
+  auth/        router.py · deps.py · service.py · schemas.py
+  users/       router.py · router_admin.py · service.py · crud.py · models.py · schemas.py
+  {domain}/    same pattern for each new feature
+  main.py
+migrations/    Aerich
+frontend/      React 19 + Vite (TypeScript)
+k8s/charts/    Helm
+```
+
+---
+
+## Security
+
+- Secrets: `.env` locally, Google Secret Manager / K8s Secrets in prod. Never commit `.env`.
+- Postgres SSL required in prod. CORS allowlist only — never `allow_origins=["*"]`.
+- Never log passwords, tokens, or PII.
+- `uv pip audit` in CI weekly.
+
+---
+
+## CI/CD (GitHub Actions)
+
+Every PR: ruff · mypy · pytest · frontend typecheck/lint/test · docker build · helm lint · uv pip audit.
+Deploy on merge to `main`: git-SHA-tagged image → `helm upgrade` staging → manual gate → prod.
+
+---
+
+## Pre-Commit Checklist
+- [ ] `uv run ruff check . --fix && uv run ruff format .`
+- [ ] `uv run mypy --strict app/`
+- [ ] `uv run pytest -x -q`
+- [ ] `npm run typecheck && npm run lint`
+- [ ] No hardcoded secrets; `.env` not staged
+- [ ] Aerich migration created for any model change
+- [ ] `helm lint k8s/charts/*`
